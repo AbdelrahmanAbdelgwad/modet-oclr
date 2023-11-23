@@ -1,0 +1,5 @@
+pytorch==1.9.1
+Pillow
+opencv
+einops
+tensorboardX
