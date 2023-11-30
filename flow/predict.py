@@ -1,5 +1,6 @@
 import sys
-sys.path.append('core')
+
+sys.path.append("core")
 
 import os
 import cv2
@@ -18,7 +19,8 @@ from io import BytesIO
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
 
 def writeFlowFile(filename, uv):
     """
@@ -31,7 +33,7 @@ def writeFlowFile(filename, uv):
         sys.exit("writeFlowFile: flow must have two bands!")
     H = np.array(uv.shape[0], dtype=np.int32)
     W = np.array(uv.shape[1], dtype=np.int32)
-    with open(filename, 'wb') as f:
+    with open(filename, "wb") as f:
         f.write(TAG_STRING.tobytes())
         f.write(W.tobytes())
         f.write(H.tobytes())
@@ -59,12 +61,12 @@ class ImgPair(Dataset):
         self.gap = gap
         self.reverse = reverse
 
-        images = glob.glob(os.path.join(self.data_dir, '*.png')) + \
-                 glob.glob(os.path.join(self.data_dir, '*.jpg'))
+        images = glob.glob(os.path.join(self.data_dir, "*.png")) + glob.glob(
+            os.path.join(self.data_dir, "*.jpg")
+        )
         self.images = sorted(images)
         self.images_ = self.images[:-gap]
 
-        
     def __len__(self):
         return len(self.images_)
 
@@ -83,7 +85,7 @@ class ImgPair(Dataset):
         padder = InputPadder(image1.shape)
         image1, image2 = padder.pad(image1[None], image2[None])
         return image1[0], image2[0], svfile
-   
+
 
 def predict_batch(args):
     model = torch.nn.DataParallel(RAFT(args))
@@ -99,11 +101,12 @@ def predict_batch(args):
     os.makedirs(floout, exist_ok=True)
     os.makedirs(rawfloout, exist_ok=True)
 
-    imgpair_dataset = ImgPair(data_dir=args.path, gap = args.gap, reverse = args.reverse)
-    imgpair_loader = DataLoader(imgpair_dataset, batch_size=args.batch_size, shuffle=False)
+    imgpair_dataset = ImgPair(data_dir=args.path, gap=args.gap, reverse=args.reverse)
+    imgpair_loader = DataLoader(
+        imgpair_dataset, batch_size=args.batch_size, shuffle=False
+    )
 
     with torch.no_grad():
-       
         for _, data in enumerate(imgpair_loader):
             image1, image2, svfiles = data
             flow_low, flow_up = model(image1, image2, iters=20, test_mode=True)
@@ -112,29 +115,35 @@ def predict_batch(args):
                 rawflopath = os.path.join(rawfloout, os.path.basename(svfile))
 
                 flo = flow_up[k].permute(1, 2, 0).cpu().numpy()
-                
+
                 # save raw flow
-                writeFlowFile(rawflopath[:-4]+'.flo', flo)
+                writeFlowFile(rawflopath[:-4] + ".flo", flo)
 
                 # save image.
                 flo = flow_viz.flow_to_image(flo)
-                cv2.imwrite(flopath[:-4]+'.png', flo[:, :, [2, 1, 0]])
-        
+                cv2.imwrite(flopath[:-4] + ".png", flo[:, :, [2, 1, 0]])
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # parser.add_argument('--resolution', nargs='+', type=int)
-    parser.add_argument('--model', help="restore checkpoint")
-    parser.add_argument('--path', help="dataset for prediction")
-    parser.add_argument('--gap', type=int, help="gap between frames")
-    parser.add_argument('--reverse', type=int, help="video forward or backward")
-    parser.add_argument('--outroot', help="path for output flow as image")
-    parser.add_argument('--raw_outroot', help="path for output flow as xy displacement")
-    parser.add_argument('--batch_size', type=int, default=4)    
+    parser.add_argument("--model", help="restore checkpoint")
+    parser.add_argument("--path", help="dataset for prediction")
+    parser.add_argument("--gap", type=int, help="gap between frames")
+    parser.add_argument("--reverse", type=int, help="video forward or backward")
+    parser.add_argument("--outroot", help="path for output flow as image")
+    parser.add_argument("--raw_outroot", help="path for output flow as xy displacement")
+    parser.add_argument("--batch_size", type=int, default=4)
 
-    parser.add_argument('--small', action='store_true', help='use small model')
-    parser.add_argument('--mixed_precision', action='store_true', help='use mixed precision')
-    parser.add_argument('--alternate_corr', action='store_true', help='use efficent correlation implementation')
+    parser.add_argument("--small", action="store_true", help="use small model")
+    parser.add_argument(
+        "--mixed_precision", action="store_true", help="use mixed precision"
+    )
+    parser.add_argument(
+        "--alternate_corr",
+        action="store_true",
+        help="use efficent correlation implementation",
+    )
     args = parser.parse_args()
 
     predict_batch(args)
