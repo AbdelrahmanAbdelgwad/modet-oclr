@@ -86,7 +86,8 @@ def setup_dataset(args):
         amodal = True
 
     elif dataset == "DAVIS16":
-        trn_basepath = "/home/hydra/modet/usyd-oclr/flow/DAVIS-data/DAVIS"
+        # trn_basepath = "/home/hydra/modet/usyd-oclr/flow/DAVIS-data/DAVIS"
+        trn_basepath = "/home/aabd0969@acfr.usyd.edu.au/usyd-oclr/flow/DAVIS-data/DAVIS"
         trn_img_dir = trn_basepath + "/JPEGImages/480p"
         trn_gt_dir = trn_basepath + "/Annotations/480p"
         trn_flow_dir = trn_basepath + "/Flows_gap1"
@@ -124,7 +125,8 @@ def setup_dataset(args):
         ]
         trn_data_dir = [trn_flow_dir, trn_img_dir, trn_gt_dir]
 
-        val_basepath = "/home/hydra/modet/usyd-oclr/flow/DAVIS-data/DAVIS"
+        # val_basepath = "/home/hydra/modet/usyd-oclr/flow/DAVIS-data/DAVIS"
+        val_basepath = "/home/aabd0969@acfr.usyd.edu.au/usyd-oclr/flow/DAVIS-data/DAVIS"
         val_img_dir = val_basepath + "/JPEGImages/480p"
         val_gt_dir = val_basepath + "/Annotations/480p"
         val_flow_dir = val_basepath + "/Flows_gap1"

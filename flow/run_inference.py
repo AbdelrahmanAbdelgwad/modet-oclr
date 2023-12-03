@@ -2,7 +2,8 @@ import os
 import glob as gb
 
 
-data_path = "/home/hydra/modet/usyd-oclr/flow/DAVIS-data/DAVIS"
+# data_path = "/home/hydra/modet/usyd-oclr/flow/DAVIS-data/DAVIS"
+data_path = "/home/aabd0969@acfr.usyd.edu.au/usyd-oclr/flow/DAVIS-data/DAVIS"
 rgb_path = data_path + "/JPEGImages/480p"
 # '/JPEGImages/480p' for DAVIS16 & DAVIS17-motion and '/JPEGImages' for others
 
