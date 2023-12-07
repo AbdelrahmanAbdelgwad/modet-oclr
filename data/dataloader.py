@@ -150,7 +150,6 @@ class FlowLoader(Dataset):
         smpl_names = self.samples[idx]
 
         smpl_names = remove_all_zeros(smpl_names)
-        print("smpl_names", smpl_names)
 
         for i, name in enumerate(smpl_names):
             out, seg_gt = self.readSingleSmpl(name)
