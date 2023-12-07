@@ -14,7 +14,7 @@ from .data_utils import (
 
 def remove_all_zeros(file_list):
     # Define a regular expression pattern to match strings with all zeros in the filename
-    pattern = re.compile(r"/0+[^/]+\.\w+$")
+    pattern = re.compile(r"00000")
 
     # Filter out strings with all zeros in the filename
     filtered_list = [item for item in file_list if not pattern.search(item)]
