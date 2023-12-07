@@ -111,6 +111,7 @@ def predict_batch(args):
             image1, image2, svfiles = data
             flow_low, flow_up = model(image1, image2, iters=20, test_mode=True)
             for k, svfile in enumerate(svfiles):
+                print(svfile)
                 flopath = os.path.join(floout, os.path.basename(svfile))
                 rawflopath = os.path.join(rawfloout, os.path.basename(svfile))
 
