@@ -83,6 +83,9 @@ def main(args):
     while it < num_it:
         for i, sample in enumerate(trn_loader):
             flow, gt_am, _ = sample
+            print("flow shape", flow.shape)
+            print("gt_am", gt_am.shape)
+
             gt_am = gt_am.float().to(device)  # "_am" represents amodal masks.
             gt_m = ut.find_recon_mask(
                 gt_am, torch.from_numpy(np.arange(gt_am.size()[2])).long()
