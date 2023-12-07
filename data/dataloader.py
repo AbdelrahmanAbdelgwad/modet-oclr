@@ -1,7 +1,7 @@
 import os
 import glob
 import numpy as np
-
+import re
 from torch.utils.data import Dataset
 from .data_utils import (
     getFrameGroupsList,
@@ -10,6 +10,16 @@ from .data_utils import (
     readAmodalSeg,
     processMultiSeg,
 )
+
+
+def remove_all_zeros(file_list):
+    # Define a regular expression pattern to match strings with all zeros in the filename
+    pattern = re.compile(r"/0+[^/]+\.\w+$")
+
+    # Filter out strings with all zeros in the filename
+    filtered_list = [item for item in file_list if not pattern.search(item)]
+
+    return filtered_list
 
 
 class FlowLoader(Dataset):
@@ -138,8 +148,7 @@ class FlowLoader(Dataset):
         outs = []
         seg_gts = []
         smpl_names = self.samples[idx]
-
-        print("smpl_names", smpl_names)
+        smpl_names = remove_all_zeros(smpl_names)
         for i, name in enumerate(smpl_names):
             out, seg_gt = self.readSingleSmpl(name)
             outs.append(out)
