@@ -137,8 +137,9 @@ class FlowLoader(Dataset):
     def __getitem__(self, idx):
         outs = []
         seg_gts = []
-        smpl_names = self.samples[idx + 1]
+        smpl_names = self.samples[idx]
 
+        print("smpl_names", smpl_names)
         for i, name in enumerate(smpl_names):
             out, seg_gt = self.readSingleSmpl(name)
             outs.append(out)
